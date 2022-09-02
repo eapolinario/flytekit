@@ -9,6 +9,7 @@ if CURRENT_PYTHON < MIN_PYTHON_VERSION:
         f"Flytekit API is only supported for Python version is {MIN_PYTHON_VERSION}+. Detected you are on"
         f" version {CURRENT_PYTHON}, installation will not proceed!"
     )
+
     sys.exit(-1)
 
 extras_require = {}
