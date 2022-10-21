@@ -365,8 +365,8 @@ class PythonTask(TrackedInstance, Task, Generic[T]):
         task_config: T,
         interface: Optional[Interface] = None,
         environment: Optional[Dict[str, str]] = None,
-        disable_deck: bool = True,
-        enable_deck: bool = False,
+        disable_deck: Optional[bool] = None,
+        enable_deck: Optional[bool] = None,
         **kwargs,
     ):
         """
@@ -391,8 +391,13 @@ class PythonTask(TrackedInstance, Task, Generic[T]):
         self._python_interface = interface if interface else Interface()
         self._environment = environment if environment else {}
         self._task_config = task_config
+
         if disable_deck is True and enable_deck is True:
             raise AssertionError("Decks cannot be enabled and disabled at the same time")
+        if disable_deck is None:
+            disable_deck = True
+        if enable_deck is None:
+            enable_deck = False
         self._enable_deck = not disable_deck or enable_deck
 
     # TODO lets call this interface and the other as flyte_interface?
