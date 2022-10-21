@@ -89,7 +89,8 @@ def task(
     secret_requests: Optional[List[Secret]] = None,
     execution_mode: Optional[PythonFunctionTask.ExecutionBehavior] = PythonFunctionTask.ExecutionBehavior.DEFAULT,
     task_resolver: Optional[TaskResolverMixin] = None,
-    disable_deck: bool = False,
+    disable_deck: bool = True,
+    enable_deck: bool = False
 ) -> Union[Callable, PythonFunctionTask]:
     """
     This is the core decorator to use for any task type in flytekit.
@@ -204,6 +205,7 @@ def task(
             execution_mode=execution_mode,
             task_resolver=task_resolver,
             disable_deck=disable_deck,
+            enable_deck=enable_deck,
         )
         update_wrapper(task_instance, fn)
         return task_instance
