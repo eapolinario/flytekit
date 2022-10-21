@@ -365,7 +365,8 @@ class PythonTask(TrackedInstance, Task, Generic[T]):
         task_config: T,
         interface: Optional[Interface] = None,
         environment: Optional[Dict[str, str]] = None,
-        disable_deck: bool = False,
+        disable_deck: bool = True,
+        enable_deck: bool = False,
         **kwargs,
     ):
         """
@@ -390,7 +391,9 @@ class PythonTask(TrackedInstance, Task, Generic[T]):
         self._python_interface = interface if interface else Interface()
         self._environment = environment if environment else {}
         self._task_config = task_config
-        self._disable_deck = disable_deck
+        if disable_deck is True and enable_deck is True:
+            raise AssertionError("Decks cannot be enabled and disabled at the same time")
+        self._enable_deck = not disable_deck or enable_deck
 
     # TODO lets call this interface and the other as flyte_interface?
     @property
@@ -527,18 +530,18 @@ class PythonTask(TrackedInstance, Task, Generic[T]):
                         f"Failed to convert return value for var {k} for function {self.name} with error {type(e)}: {e}"
                     ) from e
 
-            INPUT = "input"
-            OUTPUT = "output"
+            if self._enable_deck:
+                INPUT = "input"
+                OUTPUT = "output"
 
-            input_deck = Deck(INPUT)
-            for k, v in native_inputs.items():
-                input_deck.append(TypeEngine.to_html(ctx, v, self.get_type_for_input_var(k, v)))
+                input_deck = Deck(INPUT)
+                for k, v in native_inputs.items():
+                    input_deck.append(TypeEngine.to_html(ctx, v, self.get_type_for_input_var(k, v)))
 
-            output_deck = Deck(OUTPUT)
-            for k, v in native_outputs_as_map.items():
-                output_deck.append(TypeEngine.to_html(ctx, v, self.get_type_for_output_var(k, v)))
+                output_deck = Deck(OUTPUT)
+                for k, v in native_outputs_as_map.items():
+                    output_deck.append(TypeEngine.to_html(ctx, v, self.get_type_for_output_var(k, v)))
 
-            if _internal.Deck.DISABLE_DECK.read() is not True and self.disable_deck is False:
                 _output_deck(self.name.split(".")[-1], new_user_params)
 
             outputs_literal_map = _literal_models.LiteralMap(literals=literals)
