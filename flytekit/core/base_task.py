@@ -392,8 +392,8 @@ class PythonTask(TrackedInstance, Task, Generic[T]):
         self._environment = environment if environment else {}
         self._task_config = task_config
 
-        if disable_deck is True and enable_deck is True:
-            raise AssertionError("Decks cannot be enabled and disabled at the same time")
+        if disable_deck is not None and enable_deck is not None:
+            raise AssertionError("Cannot set disable_deck and enable_deck at the same time")
         if disable_deck is None:
             disable_deck = True
         if enable_deck is None:
