@@ -71,14 +71,14 @@ def test_invalid_deck_settings(disable_deck, enable_deck):
 def test_deck_pandas_dataframe(disable_deck, enable_deck, expected_decks):
     ctx = FlyteContextManager.current_context()
 
-    @task
+    @task(disable_deck=disable_deck, enable_deck=enable_deck)
     def t_df(a: str) -> int:
         df = pd.DataFrame({"a": [1, 2, 3], "b": [4, 5, 6]})
         flytekit.current_context().default_deck.append(TopFrameRenderer().to_html(df))
         return int(a)
 
     t_df(a="42")
-    assert len(ctx.user_space_params.decks) == 1
+    assert len(ctx.user_space_params.decks) == expected_decks
 
 
 
