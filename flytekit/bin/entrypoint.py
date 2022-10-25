@@ -491,8 +491,7 @@ def fast_execute_task_cmd(additional_distribution: str, dest_dir: str, task_exec
     task execute command for the updated code.
     """
     if additional_distribution is not None:
-        if not dest_dir:
-            dest_dir = os.getcwd()
+        dest_dir = os.getcwd()
         _download_distribution(additional_distribution, dest_dir)
 
     # Insert the call to fast before the unbounded resolver args
