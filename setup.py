@@ -1,5 +1,6 @@
 import sys
 
+# Some comment
 from setuptools import find_packages, setup  # noqa
 
 MIN_PYTHON_VERSION = (3, 7)
