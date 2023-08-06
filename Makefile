@@ -26,7 +26,7 @@ setup: install-piptools ## Install requirements
 
 .PHONY: setup-spark2
 setup-spark2: install-piptools ## Install requirements
-	pip-sync requirements-spark2.txt dev-requirements.in
+	pip install -r dev-requirements.in
 
 .PHONY: fmt
 fmt: ## Format code with black and isort
