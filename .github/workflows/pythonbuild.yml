@@ -31,18 +31,11 @@ jobs:
           - python-version: 3.10
             os: windows-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
-      - name: Cache pip
-        uses: actions/cache@v2
-        with:
-          # This path is specific to Ubuntu
-          path: ~/.cache/pip
-          # Look to see if there is a cache hit for the corresponding requirements files
-          key: ${{ format('{0}-pip-{1}', runner.os, hashFiles('dev-requirements.txt', format('requirements{0}.txt', matrix.spark-version-suffix))) }}
       - name: Install dependencies
         run: |
           make setup${{ matrix.spark-version-suffix }}
@@ -50,10 +43,6 @@ jobs:
       - name: Test with coverage
         run: |
           make unit_test_codecov
-      - name: Codecov
-        uses: codecov/codecov-action@v3.1.0
-        with:
-          fail_ci_if_error: false
 
   build-plugins:
     runs-on: self-hosted
@@ -115,24 +104,17 @@ jobs:
           - python-version: 3.10
             plugin-names: "flytekit-whylogs"
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
-      - name: Cache pip
-        uses: actions/cache@v2
-        with:
-          # This path is specific to Ubuntu
-          path: ~/.cache/pip
-          # Look to see if there is a cache hit for the corresponding requirements files
-          key: ${{ format('{0}-pip-{1}', runner.os, hashFiles('dev-requirements.txt', format('plugins/{0}/requirements.txt', matrix.plugin-names ))) }}
       - name: Install dependencies
         run: |
           make setup
           cd plugins/${{ matrix.plugin-names }}
           pip install -r requirements.txt
-          if [ -f dev-requirements.txt ]; then pip install -r dev-requirements.txt; fi
+          if [ -f dev-requirements.in ]; then pip install -r dev-requirements.in; fi
           pip install -U https://github.com/flyteorg/flytekit/archive/${{ github.sha }}.zip#egg=flytekit
           pip freeze
       - name: Test with coverage
@@ -149,21 +131,15 @@ jobs:
     runs-on: self-hosted
     steps:
       - name: Fetch the code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Set up Python 3.8
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: 3.8
-      - uses: actions/cache@v2
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('**/dev-requirements.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip==21.2.4
-          pip install -r dev-requirements.txt
+          pip install -r dev-requirements.in
       - name: Lint
         run: |
           make lint
