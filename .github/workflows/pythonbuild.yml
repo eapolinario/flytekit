@@ -15,8 +15,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest]
-        python-version: ["3.7", "3.8", "3.9", "3.10"]
+        os: [self-hosted]
+        python-version: ["3.10", "3.11"]
         spark-version-suffix: ["", "-spark2"]
         exclude:
           - python-version: 3.8
@@ -31,18 +31,11 @@ jobs:
           - python-version: 3.10
             os: windows-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
-      - name: Cache pip
-        uses: actions/cache@v2
-        with:
-          # This path is specific to Ubuntu
-          path: ~/.cache/pip
-          # Look to see if there is a cache hit for the corresponding requirements files
-          key: ${{ format('{0}-pip-{1}', runner.os, hashFiles('dev-requirements.txt', format('requirements{0}.txt', matrix.spark-version-suffix))) }}
       - name: Install dependencies
         run: |
           make setup${{ matrix.spark-version-suffix }}
@@ -50,17 +43,13 @@ jobs:
       - name: Test with coverage
         run: |
           make unit_test_codecov
-      - name: Codecov
-        uses: codecov/codecov-action@v3.1.0
-        with:
-          fail_ci_if_error: false
 
   build-plugins:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.8", "3.9", "3.10"]
+        python-version: ["3.10", "3.11"]
         plugin-names:
           # Please maintain an alphabetical order in the following list
           - flytekit-aws-athena
@@ -115,24 +104,17 @@ jobs:
           - python-version: 3.10
             plugin-names: "flytekit-whylogs"
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
-      - name: Cache pip
-        uses: actions/cache@v2
-        with:
-          # This path is specific to Ubuntu
-          path: ~/.cache/pip
-          # Look to see if there is a cache hit for the corresponding requirements files
-          key: ${{ format('{0}-pip-{1}', runner.os, hashFiles('dev-requirements.txt', format('plugins/{0}/requirements.txt', matrix.plugin-names ))) }}
       - name: Install dependencies
         run: |
           make setup
           cd plugins/${{ matrix.plugin-names }}
           pip install -r requirements.txt
-          if [ -f dev-requirements.txt ]; then pip install -r dev-requirements.txt; fi
+          if [ -f dev-requirements.in ]; then pip install -r dev-requirements.in; fi
           pip install -U https://github.com/flyteorg/flytekit/archive/${{ github.sha }}.zip#egg=flytekit
           pip freeze
       - name: Test with coverage
@@ -146,24 +128,18 @@ jobs:
              coverage run -m pytest tests
           fi
   lint:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
       - name: Fetch the code
-        uses: actions/checkout@v2
-      - name: Set up Python 3.8
-        uses: actions/setup-python@v2
+        uses: actions/checkout@v3
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v4
         with:
-          python-version: 3.8
-      - uses: actions/cache@v2
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('**/dev-requirements.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-
+          python-version: 3.10
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip==21.2.4
-          pip install -r dev-requirements.txt
+          pip install -r dev-requirements.in
       - name: Lint
         run: |
           make lint
@@ -171,21 +147,3 @@ jobs:
         uses: ludeeus/action-shellcheck@master
         with:
           ignore_paths: boilerplate
-
-  docs:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Fetch the code
-        uses: actions/checkout@v2
-      - name: Set up Python 3.8
-        uses: actions/setup-python@v2
-        with:
-          python-version: 3.8
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip==21.2.4 setuptools wheel
-          pip install -r doc-requirements.txt
-      - name: Build the documentation
-        run: |
-          # TODO: Remove after buf migration is done and packages updated
-          PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=python make -C docs html

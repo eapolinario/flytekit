@@ -22,11 +22,11 @@ update_boilerplate:
 
 .PHONY: setup
 setup: install-piptools ## Install requirements
-	pip-sync requirements.txt dev-requirements.txt
+	pip install -r dev-requirements.in
 
 .PHONY: setup-spark2
 setup-spark2: install-piptools ## Install requirements
-	pip-sync requirements-spark2.txt dev-requirements.txt
+	pip install -r dev-requirements.in
 
 .PHONY: fmt
 fmt: ## Format code with black and isort
@@ -70,8 +70,8 @@ requirements.txt: export CUSTOM_COMPILE_COMMAND := make requirements.txt
 requirements.txt: requirements.in install-piptools
 	$(PIP_COMPILE) $<
 
-dev-requirements.txt: export CUSTOM_COMPILE_COMMAND := make dev-requirements.txt
-dev-requirements.txt: dev-requirements.in requirements.txt install-piptools
+dev-requirements.in: export CUSTOM_COMPILE_COMMAND := make dev-requirements.in
+dev-requirements.in: dev-requirements.in requirements.txt install-piptools
 	$(PIP_COMPILE) $<
 
 doc-requirements.txt: export CUSTOM_COMPILE_COMMAND := make doc-requirements.txt
@@ -83,7 +83,7 @@ ${MOCK_FLYTE_REPO}/requirements.txt: ${MOCK_FLYTE_REPO}/requirements.in install-
 	$(PIP_COMPILE) $<
 
 .PHONY: requirements
-requirements: requirements.txt dev-requirements.txt requirements-spark2.txt doc-requirements.txt ${MOCK_FLYTE_REPO}/requirements.txt ## Compile requirements
+requirements: requirements.txt dev-requirements.in requirements-spark2.txt doc-requirements.txt ${MOCK_FLYTE_REPO}/requirements.txt ## Compile requirements
 
 # TODO: Change this in the future to be all of flytekit
 .PHONY: coverage
