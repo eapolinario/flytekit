@@ -22,7 +22,7 @@ update_boilerplate:
 
 .PHONY: setup
 setup: install-piptools ## Install requirements
-	pip-sync requirements.txt dev-requirements.in
+	pip install -r dev-requirements.in
 
 .PHONY: setup-spark2
 setup-spark2: install-piptools ## Install requirements
