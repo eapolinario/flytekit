@@ -49,7 +49,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
-        python-version: ${{ fromJson(needs.detect-python-versions.outputs.python-versions) }}
+        python-version: ${{ fromJSON(needs.detect-python-versions.outputs.python-versions) }}
     steps:
       - uses: insightsengineering/disk-space-reclaimer@v1
       - uses: actions/checkout@v4
