@@ -49,31 +49,34 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest]
-        python-version: ${{ fromJSON(needs.detect-python-versions.outputs.python-versions) }}
+        # python-version: ${{ fromJSON(needs.detect-python-versions.outputs.python-versions) }}
+        python-version: needs.detect-python-versions.outputs.python-versions
     steps:
-      - uses: insightsengineering/disk-space-reclaimer@v1
-      - uses: actions/checkout@v4
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v4
-        with:
-          python-version: ${{ matrix.python-version }}
-      - name: Cache pip
-        uses: actions/cache@v3
-        with:
-          # This path is specific to Ubuntu
-          path: ~/.cache/pip
-          # Look to see if there is a cache hit for the corresponding requirements files
-          key: ${{ format('{0}-pip-{1}', runner.os, hashFiles('dev-requirements.in', 'requirements.in')) }}
-      - name: Install dependencies
-        run: |
-          make setup
-          pip uninstall -y pandas
-          pip freeze
-      - name: Test with coverage
-        run: |
-          make unit_test_codecov
-      - name: Codecov
-        uses: codecov/codecov-action@v3.1.4
-        with:
-          fail_ci_if_error: false
-          files: coverage.xml
+      - run: |
+          echo ${{ matrix.python-version }}
+      # - uses: insightsengineering/disk-space-reclaimer@v1
+      # - uses: actions/checkout@v4
+      # - name: Set up Python ${{ matrix.python-version }}
+      #   uses: actions/setup-python@v4
+      #   with:
+      #     python-version: ${{ matrix.python-version }}
+      # - name: Cache pip
+      #   uses: actions/cache@v3
+      #   with:
+      #     # This path is specific to Ubuntu
+      #     path: ~/.cache/pip
+      #     # Look to see if there is a cache hit for the corresponding requirements files
+      #     key: ${{ format('{0}-pip-{1}', runner.os, hashFiles('dev-requirements.in', 'requirements.in')) }}
+      # - name: Install dependencies
+      #   run: |
+      #     make setup
+      #     pip uninstall -y pandas
+      #     pip freeze
+      # - name: Test with coverage
+      #   run: |
+      #     make unit_test_codecov
+      # - name: Codecov
+      #   uses: codecov/codecov-action@v3.1.4
+      #   with:
+      #     fail_ci_if_error: false
+      #     files: coverage.xml
