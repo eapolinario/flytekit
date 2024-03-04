@@ -31,7 +31,7 @@ jobs:
       - name: Set Python versions for pull request
         if: github.event_name == 'pull_request'
         id: set-python-versions-pr
-        run: echo "name=python-versions-pr::[\"3.12\"]" >> $GITHUB_ENV
+        run: echo "name=python-versions-pr::${{ toJson([\"3.12\"]) }}" >> $GITHUB_ENV
       - name: Combine results
         id: set-python-versions
         run: |
