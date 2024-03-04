@@ -50,7 +50,7 @@ jobs:
       matrix:
         os: [ubuntu-latest]
         # python-version: ${{ fromJSON(needs.detect-python-versions.outputs.python-versions) }}
-        python-version: needs.detect-python-versions.outputs.python-versions
+        python-version: ${{ needs.detect-python-versions.outputs.python-versions }}
     steps:
       - run: |
           echo ${{ matrix.python-version }}
