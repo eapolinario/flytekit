@@ -35,11 +35,12 @@ jobs:
       - name: Combine results
         id: set-python-versions
         run: |
-          if [[ -n "${{ steps.set-python-versions-schedule.outputs.python-versions }}" ]]; then
-            echo "name=python-versions::${{ steps.set-python-versions-schedule.outputs.python-versions }}" >> $GITHUB_ENV
-          else
-            echo "name=python-versions::${{ steps.set-python-versions-pr.outputs.python-versions }}" >> $GITHUB_ENV
-          fi
+          echo "name=python-versions::${{ steps.set-python-versions-pr.outputs.python-versions }}" >> $GITHUB_ENV
+          # if [[ -n "${{ steps.set-python-versions-schedule.outputs.python-versions }}" ]]; then
+          #   echo "name=python-versions::${{ steps.set-python-versions-schedule.outputs.python-versions }}" >> $GITHUB_ENV
+          # else
+          #   echo "name=python-versions::${{ steps.set-python-versions-pr.outputs.python-versions }}" >> $GITHUB_ENV
+          # fi
 
   build:
     needs:
