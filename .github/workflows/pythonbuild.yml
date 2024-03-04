@@ -35,7 +35,7 @@ jobs:
       - name: Combine results
         id: set-python-versions
         run: |
-          echo "name=python-versions::${{ steps.set-python-versions-pr.outputs.python-versions }}" >> $GITHUB_ENV
+          echo "name=python-versions::${{ toJson(steps.set-python-versions-pr.outputs.python-versions) }}" >> $GITHUB_ENV
           # if [[ -n "${{ steps.set-python-versions-schedule.outputs.python-versions }}" ]]; then
           #   echo "name=python-versions::${{ steps.set-python-versions-schedule.outputs.python-versions }}" >> $GITHUB_ENV
           # else
@@ -54,7 +54,7 @@ jobs:
         # python-version: ${{ needs.detect-python-versions.outputs.python-versions }}
     steps:
       - run: |
-          echo ${{ fromJSON(needs.detect-python-versions.outputs.python-versions) }}
+          echo ${{ fromJson(needs.detect-python-versions.outputs.python-versions) }}
           # echo ${{ matrix.python-version }}
       # - uses: insightsengineering/disk-space-reclaimer@v1
       # - uses: actions/checkout@v4
