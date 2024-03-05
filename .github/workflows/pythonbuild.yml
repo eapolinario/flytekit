@@ -29,7 +29,7 @@ jobs:
         run: echo "python_versions=[\"3.8\",\"3.9\",\"3.10\",\"3.11\",\"3.12\"]" >> $GITHUB_ENV
       - name: Set Python versions for pull request
         if: github.event_name == 'pull_request'
-        run: echo "python_versions=[\"3.12\"]" >> $GITHUB_ENV
+        run: echo "python_versions=[\"3.11\",\"3.12\"]" >> $GITHUB_ENV
 
   build:
     needs:
