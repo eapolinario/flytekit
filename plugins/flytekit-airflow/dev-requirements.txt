@@ -38,7 +38,7 @@ apache-airflow-providers-common-sql==1.8.0
     #   apache-airflow
     #   apache-airflow-providers-google
     #   apache-airflow-providers-sqlite
-apache-airflow-providers-ftp==3.6.0
+apache-airflow-providers-ftp==3.7.0
     # via apache-airflow
 apache-airflow-providers-google==10.11.0
     # via
@@ -53,9 +53,7 @@ apache-airflow-providers-sqlite==3.5.0
 apache-beam[gcp]==2.51.0
     # via apache-airflow-providers-apache-beam
 apispec[yaml]==6.3.0
-    # via
-    #   apispec
-    #   flask-appbuilder
+    # via flask-appbuilder
 argcomplete==3.1.4
     # via apache-airflow
 asgiref==3.7.2
@@ -120,9 +118,7 @@ colorlog==4.8.0
 configupdater==3.1.1
     # via apache-airflow
 connexion[flask]==2.14.2
-    # via
-    #   apache-airflow
-    #   connexion
+    # via apache-airflow
 crcmod==1.7
     # via apache-beam
 cron-descriptor==1.4.0
