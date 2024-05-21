@@ -75,7 +75,7 @@ pillow==10.2.0
     #   torchvision
 protobuf==4.25.0
     # via onnxruntime
-requests==2.31.0
+requests==2.32.0
     # via torchvision
 sympy==1.12
     # via
